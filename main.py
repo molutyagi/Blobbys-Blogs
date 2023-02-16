@@ -33,13 +33,15 @@ def load_user(user_id):
 
 
 def admin_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if current_user.id != 1:
-            return abort(403)
-        return f(*args, **kwargs)
-
-    return decorated_function
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            authorized_admin_ids = [1, 2, 3]
+            if current_user.id not in authorized_admin_ids:
+                return abort(403)
+            return f(*args, **kwargs)
+        return decorated_function
+    return wrapper
 
 
 # CONFIGURE TABLES
@@ -146,18 +148,23 @@ def logout():
 
 @app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
-    requested_post = BlogPost.query.get(post_id)
-    form = CommentForm()
-    if form.validate_on_submit():
-        new_comment = Comment(
-            text=form.body.data,
-            post_id=post_id,
-            author_id=current_user.id
-        )
-        db.session.add(new_comment)
-        db.session.commit()
-        return redirect(url_for('get_all_posts'))
-    return render_template("post.html", post=requested_post, form=form, current_user=current_user, year=year)
+    if current_user.is_authenticated:
+        requested_post = BlogPost.query.get(post_id)
+        form = CommentForm()
+        if form.validate_on_submit():
+            if not current_user.id:
+                return redirect(url_for('get_all_posts'))
+            new_comment = Comment(
+                text=form.body.data,
+                post_id=post_id,
+                author_id=current_user.id
+            )
+            db.session.add(new_comment)
+            db.session.commit()
+            return redirect(url_for('get_all_posts'))
+        return render_template("post.html", post=requested_post, form=form, current_user=current_user, year=year)
+    flash("You're not logged-in. Kindly Log-in")
+    return redirect(url_for('get_all_posts'))
 
 
 @app.route("/about")
