@@ -31,17 +31,13 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 def admin_only(f):
-    def wrapper(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            authorized_admin_ids = [1, 2, 3]
-            if current_user.id not in authorized_admin_ids:
+            if current_user.id != 1:
                 return abort(403)
             return f(*args, **kwargs)
         return decorated_function
-    return wrapper
 
 
 # CONFIGURE TABLES
