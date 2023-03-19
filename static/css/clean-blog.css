@@ -12,7 +12,7 @@ body {
 
 p {
   line-height: 1.5;
-  margin: 30px 0;
+  /*margin: 30px 0;*/
 }
 
 p a {
@@ -375,6 +375,10 @@ header.masthead .post-heading .meta a {
 .post-preview > .post-meta > a:focus, .post-preview > .post-meta > a:hover {
   text-decoration: underline;
   color: #0085A1;
+}
+
+.profile-post {
+  margin-left: 25px;
 }
 
 @media only screen and (min-width: 768px) {

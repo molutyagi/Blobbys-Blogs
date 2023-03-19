@@ -1,5 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Register{% endblock %}
 
 {% block content %}
 {% include "header.html" %}
@@ -23,7 +24,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-            {% with messages = get_flashed_messages() %}
+            {% with messages=get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
             <p>{{ message }}</p>
